@@ -1,0 +1,191 @@
+- GDXReader:
+    file: /Users/pm.deoliveiradejes/Dropbox (Personal)/Uniandes/2024_20/IELE4100_2022_20 - Planificación de Sistemas de Potencia/C6 - Optimización MINLP/C6_MINLP/C6_E1.gdx
+    symbols: 
+      - name: t
+      - name: data
+      - name: Benefit
+      - name: SOC1
+      - name: Pd1
+      - name: Pch1
+      - name: Pb1
+      - name: Ps1
+      - name: AP1
+      - name: w1
+      - name: w3
+      - name: Ppvmax1
+      - name: Loadmax1
+      - name: SOCfinal1
+      - name: Capacity1
+      - name: eff_c1
+      - name: eff_d1
+      - name: CRte_c1
+      - name: CRte_d1
+      - name: DoD1
+      - name: wheeling
+      - name: Pmax1
+      - name: delta_max
+      - name: Bcalc
+      - name: balance1
+      - name: r1
+      - name: r2
+      - name: r3
+      - name: r4
+      - name: r5
+- Projection:
+    name: Benefit
+    newName: Benefit_proj_
+    asParameter: true
+- Projection:
+    name: SOC1(0)
+    newName: SOC1_proj_(0)
+    asParameter: true
+- Projection:
+    name: Pd1(0)
+    newName: Pd1_proj_(0)
+    asParameter: true
+- Projection:
+    name: Pch1(0)
+    newName: Pch1_proj_(0)
+    asParameter: true
+- Projection:
+    name: Pb1(0)
+    newName: Pb1_proj_(0)
+    asParameter: true
+- Projection:
+    name: Ps1(0)
+    newName: Ps1_proj_(0)
+    asParameter: true
+- Projection:
+    name: AP1(0)
+    newName: AP1_proj_(0)
+    asParameter: true
+- Projection:
+    name: w1(0)
+    newName: w1_proj_(0)
+    asParameter: true
+- Projection:
+    name: w3(0)
+    newName: w3_proj_(0)
+    asParameter: true
+- Projection:
+    name: Bcalc
+    newName: Bcalc_proj_
+    asParameter: true
+- Projection:
+    name: balance1(0)
+    newName: balance1_proj_(0)
+    asParameter: true
+- Projection:
+    name: r1(0)
+    newName: r1_proj_(0)
+    asParameter: true
+- Projection:
+    name: r2(0)
+    newName: r2_proj_(0)
+    asParameter: true
+- Projection:
+    name: r3(0)
+    newName: r3_proj_(0)
+    asParameter: true
+- Projection:
+    name: r4(0)
+    newName: r4_proj_(0)
+    asParameter: true
+- Projection:
+    name: r5(0)
+    newName: r5_proj_(0)
+    asParameter: true
+- PandasExcelWriter:
+    file: /Users/pm.deoliveiradejes/Dropbox (Personal)/Uniandes/2024_20/IELE4100_2022_20 - Planificación de Sistemas de Potencia/C6 - Optimización MINLP/C6_MINLP/C6_E1_export.xlsx
+    excelWriterArguments: { engine: null, mode: w, if_sheet_exists: null}
+    symbols:
+      - name: t
+        range: t!A1
+        rowDimension: 1
+      - name: data
+        range: data!A1
+        rowDimension: 2
+      - name: Benefit_proj_
+        range: Benefit!A1
+        rowDimension: 0
+      - name: SOC1_proj_
+        range: SOC1!A1
+        rowDimension: 1
+      - name: Pd1_proj_
+        range: Pd1!A1
+        rowDimension: 1
+      - name: Pch1_proj_
+        range: Pch1!A1
+        rowDimension: 1
+      - name: Pb1_proj_
+        range: Pb1!A1
+        rowDimension: 1
+      - name: Ps1_proj_
+        range: Ps1!A1
+        rowDimension: 1
+      - name: AP1_proj_
+        range: AP1!A1
+        rowDimension: 1
+      - name: w1_proj_
+        range: w1!A1
+        rowDimension: 1
+      - name: w3_proj_
+        range: w3!A1
+        rowDimension: 1
+      - name: Ppvmax1
+        range: Ppvmax1!A1
+        rowDimension: 0
+      - name: Loadmax1
+        range: Loadmax1!A1
+        rowDimension: 0
+      - name: SOCfinal1
+        range: SOCfinal1!A1
+        rowDimension: 0
+      - name: Capacity1
+        range: Capacity1!A1
+        rowDimension: 0
+      - name: eff_c1
+        range: eff_c1!A1
+        rowDimension: 0
+      - name: eff_d1
+        range: eff_d1!A1
+        rowDimension: 0
+      - name: CRte_c1
+        range: CRte_c1!A1
+        rowDimension: 0
+      - name: CRte_d1
+        range: CRte_d1!A1
+        rowDimension: 0
+      - name: DoD1
+        range: DoD1!A1
+        rowDimension: 0
+      - name: wheeling
+        range: wheeling!A1
+        rowDimension: 0
+      - name: Pmax1
+        range: Pmax1!A1
+        rowDimension: 0
+      - name: delta_max
+        range: delta_max!A1
+        rowDimension: 0
+      - name: Bcalc_proj_
+        range: Bcalc!A1
+        rowDimension: 0
+      - name: balance1_proj_
+        range: balance1!A1
+        rowDimension: 1
+      - name: r1_proj_
+        range: r1!A1
+        rowDimension: 1
+      - name: r2_proj_
+        range: r2!A1
+        rowDimension: 1
+      - name: r3_proj_
+        range: r3!A1
+        rowDimension: 1
+      - name: r4_proj_
+        range: r4!A1
+        rowDimension: 1
+      - name: r5_proj_
+        range: r5!A1
+        rowDimension: 1
