@@ -14,8 +14,8 @@ lb = [0; 0];    % Lower bounds on x1 and x2 (both are non-negative)
 ub = [];        % No upper bounds specified
 
 % Solve the linear programming problem
-[x, fval, exitflag, output,lambda] = linprog(f, A, b, Aeq, beq, lb, ub);
-
+%[x, fval, exitflag, output,lambda] = linprog(f, A, b, Aeq, beq, lb, ub);
+[x, fval, exitflag, output,lambda] = glpk(f, A, b, Aeq, beq, lb, ub);
 % Display the results
 disp('Optimal solution:');
 disp(['x1 = ', num2str(x(1)), ' MW']);
