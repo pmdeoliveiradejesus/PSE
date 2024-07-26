@@ -17,6 +17,6 @@ disp(['x1 = ', num2str(x(1)), ' MW']);
 disp(['x2 = ', num2str(x(2)), ' MW']);
 disp(['Optimal objective value: ', num2str(fval), ' $/h']);
 disp(['Status: ', num2str(extra.status)]);
-disp(['Shadow price NonEquality Const. 1: ', num2str(-extra.lambda(1)), ' $/MWh']);
+disp(['Shadow price NonEquality Const. 1: ', num2str(extra.lambda(1)), ' $/MWh']);
 disp(['Shadow price NonEquality Const. 2: ', num2str(extra.lambda(2)), ' $/MWh']);
 disp(['Shadow price    Equality Const. 3: ', num2str(extra.lambda(3)), ' $/MWh']);
