@@ -35,3 +35,9 @@ print("Optimal value:", result.fun)
 print("Optimal solution:")
 print("x1 =", result.x[0])
 print("x2 =", result.x[1])
+
+# shadow prices
+λ_ineq = result['ineqlin']['marginals']
+λ_eq   = result['eqlin']['marginals']
+print(λ_eq) 
+print(λ_ineq) 
