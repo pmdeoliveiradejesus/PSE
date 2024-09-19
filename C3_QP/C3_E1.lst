@@ -1,0 +1,177 @@
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 14:02:27 Page 1
+Economic Load Dispatch
+C o m p i l a t i o n
+
+
+   2   
+   3   
+   4  Set Gen / g1*g2 /;
+   5   
+   6  Scalar load / 600 /;
+   7   
+   8  Table data(Gen,*)
+   9         a     b      c       Pmin  Pmax
+  10     G1  0.025 20     100     0     400
+  11     G2  0.05  25     200     0     300
+  12   
+  13   
+  14  Variable P(gen), OF;
+  15  Equation eq1, eq2;
+  16   
+  17  eq1.. OF =e= sum(gen, data(gen,'a')*P(gen)*P(gen) + data(gen,'b')*P(gen) + data(gen,'c'));
+  18   
+  19  eq2.. sum(gen,P(gen)) =g= load;
+  20   
+  21  P.lo(gen) = data(gen,'Pmin');
+  22  P.up(gen) = data(gen,'Pmax');
+  23   
+  24  Model ED / eq1, eq2 /;
+  25  solve ED using qcp minimizing of;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.3.0 125a0e22 WEX-WEI
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 14:02:27 Page 2
+Economic Load Dispatch
+Equation Listing    SOLVE ED Using QCP From line 25
+
+
+---- eq1  =E=  
+
+eq1..  - (20)*P(g1) - (25)*P(g2) + OF =E= 300 ; (LHS = 0, INFES = 300 ****)
+     
+
+---- eq2  =G=  
+
+eq2..  P(g1) + P(g2) =G= 600 ; (LHS = 0, INFES = 600 ****)
+     
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 14:02:27 Page 3
+Economic Load Dispatch
+Column Listing      SOLVE ED Using QCP From line 25
+
+
+---- P  
+
+P(g1)
+                (.LO, .L, .UP, .M = 0, 0, 400, 0)
+     (-20)      eq1
+        1       eq2
+
+P(g2)
+                (.LO, .L, .UP, .M = 0, 0, 300, 0)
+     (-25)      eq1
+        1       eq2
+
+
+---- OF  
+
+OF
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       eq1
+
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 14:02:27 Page 4
+Economic Load Dispatch
+Range Statistics    SOLVE ED Using QCP From line 25
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.000E+02, 6.000E+02]
+Bound     [min, max] : [ 3.000E+02, 4.000E+02] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.500E+01]
+
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 14:02:27 Page 5
+Economic Load Dispatch
+Model Statistics    SOLVE ED Using QCP From line 25
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            2
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             5     NON LINEAR N-Z              2
+CODE LENGTH                  14     CONSTANT POOL              20
+
+
+GENERATION TIME      =        0.000 SECONDS      4 MB  47.3.0 125a0e22 WEX-WEI
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 14:02:27 Page 6
+Economic Load Dispatch
+Solution Report     SOLVE ED Using QCP From line 25
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   ED                  OBJECTIVE  OF
+     TYPE    QCP                 DIRECTION  MINIMIZE
+     SOLVER  CONOPT              FROM LINE  25
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      2 Locally Optimal
+**** OBJECTIVE VALUE            19300.0000
+
+ RESOURCE USAGE, LIMIT          0.032 10000000000.000
+ ITERATION COUNT, LIMIT         2    2147483647
+ EVALUATION ERRORS              0             0
+--- *** This solver runs with a community license. No commercial use.
+ 
+ 
+    C O N O P T   version 4.35
+    Copyright (C) GAMS Software GmbH
+                  GAMS Development Corporation
+ 
+    Will use up to 8 threads.
+ 
+ 
+    The user model has 2 constraints and 3 variables
+    with 5 Jacobian elements, 2 of which are nonlinear.
+    The Hessian of the Lagrangian has 2 elements on the diagonal,
+    0 elements below the diagonal, and 2 nonlinear variables.
+ 
+    The post-triangular part of the model has 1 constraints and variables.
+ 
+    Preprocessed model has 1 constraints and 2 variables
+    with 2 Jacobian elements, 0 of which are nonlinear.
+ 
+ ** Optimal solution. There are no superbasic variables.
+ 
+ 
+ CONOPT time Total                            0.015 seconds
+   of which: Function evaluations             0.000 =  0.0%
+             1st Derivative evaluations       0.000 =  0.0%
+             Interval derivative evals        0.000 =  0.0%
+ 
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU eq1              300.0000       300.0000       300.0000         1.0000      
+---- EQU eq2              600.0000       600.0000        +INF           45.0000      
+
+---- VAR P  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+g1          .           400.0000       400.0000        -5.0000      
+g2          .           200.0000       300.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR OF                -INF        19300.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0     ERRORS
+
+
+EXECUTION TIME       =        0.094 SECONDS      4 MB  47.3.0 125a0e22 WEX-WEI
+
+
+USER: Academic User                                  G240823+0003Ac-GEN
+      pm.deoliveiradejes@uniandes.edu.co                      CLA100108
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C3_QP\C3_E1.gms
+Output     C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C3_QP\C3_E1.lst

@@ -70,13 +70,14 @@ Ps.lo(t) = 0;
 
 Equation Bcalc, balance1, r1, r2, r3, r4, r5;
 
-Bcalc..         Benefit =e=  -kappa*smax(t,pb(t)+ps(t))+30*sum((t), (data(t,'lambda')*ps(t)-(data(t,'lambda')+psi)*pb(t)));
+Bcalc..         Benefit =e=  -0*kappa*smax(t,pb(t)+ps(t))+30*sum((t), (data(t,'lambda')*ps(t)-(data(t,'lambda')+psi)*pb(t)));
 balance1(t)..   Pd(t) + Pb(t) + Ppvmax*data(t,'Ppvu') =e= Pch(t) +Ps(t) + Plmax*data(t,'Plu');
 r1(t)..         SOC(t) =e= SOCf$(ord(t)=1) + SOC(t-1)$(ord(t)>1) + Pch(t)*eff_c  - Pd(t)/eff_d;
 r2(t)..  Pch(t)  =l= CR_c*C*w1(t);
 r3(t)..  Pd(t) =l= CR_d*C*(1-w1(t));
 r4(t)..  Pb(t) =l= Pmax*w3(t);
 r5(t)..  Ps(t) =l= Pmax*(1-w3(t));
+
 
 Model modelCe / all /;
 solve modelCe using MINLP maximizing Benefit

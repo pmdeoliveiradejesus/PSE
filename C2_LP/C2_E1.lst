@@ -1,0 +1,152 @@
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 13:56:35 Page 1
+Economic Load Dispatch
+C o m p i l a t i o n
+
+
+   2  Set Gen / g1*g2 /;
+   3  Scalar load / 600 /;
+   4  Table data(Gen,*)
+   5          b   Pmin  Pmax
+   6     G1   20  0     400
+   7     G2   25  0     300
+   8  Variable P(gen), OF;
+   9  Equation eq1, eq2;
+  10  eq1.. OF =e= sum(gen, data(gen,'b')*P(gen));
+  11  eq2.. sum(gen,P(gen)) =g= load;
+  12  P.lo(gen) = data(gen,'Pmin');
+  13  P.up(gen) = data(gen,'Pmax');
+  14  Model ED / eq1, eq2 /;
+  15  solve ED using lp minimizing OF;
+  16   
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.3.0 125a0e22 WEX-WEI
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 13:56:35 Page 2
+Economic Load Dispatch
+Equation Listing    SOLVE ED Using LP From line 15
+
+
+---- eq1  =E=  
+
+eq1..  - 20*P(g1) - 25*P(g2) + OF =E= 0 ; (LHS = 0)
+     
+
+---- eq2  =G=  
+
+eq2..  P(g1) + P(g2) =G= 600 ; (LHS = 0, INFES = 600 ****)
+     
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 13:56:35 Page 3
+Economic Load Dispatch
+Column Listing      SOLVE ED Using LP From line 15
+
+
+---- P  
+
+P(g1)
+                (.LO, .L, .UP, .M = 0, 0, 400, 0)
+      -20       eq1
+        1       eq2
+
+P(g2)
+                (.LO, .L, .UP, .M = 0, 0, 300, 0)
+      -25       eq1
+        1       eq2
+
+
+---- OF  
+
+OF
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       eq1
+
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 13:56:35 Page 4
+Economic Load Dispatch
+Range Statistics    SOLVE ED Using LP From line 15
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 6.000E+02, 6.000E+02] - Zero values observed as well
+Bound     [min, max] : [ 3.000E+02, 4.000E+02] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.500E+01]
+
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 13:56:35 Page 5
+Economic Load Dispatch
+Model Statistics    SOLVE ED Using LP From line 15
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           2     SINGLE EQUATIONS            2
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            3
+NON ZERO ELEMENTS             5
+
+
+GENERATION TIME      =        0.015 SECONDS      4 MB  47.3.0 125a0e22 WEX-WEI
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 08/23/24 13:56:35 Page 6
+Economic Load Dispatch
+Solution Report     SOLVE ED Using LP From line 15
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   ED                  OBJECTIVE  OF
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  CPLEX               FROM LINE  15
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE            13000.0000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT         0    2147483647
+*** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.00 ticks)
+
+
+Optimal solution found
+Objective:        13000.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU eq1                 .              .              .             1.0000      
+---- EQU eq2              600.0000       600.0000        +INF           25.0000      
+
+---- VAR P  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+g1          .           400.0000       400.0000        -5.0000      
+g2          .           200.0000       300.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR OF                -INF        13000.0000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.140 SECONDS      4 MB  47.3.0 125a0e22 WEX-WEI
+
+
+USER: Academic User                                  G240823+0003Ac-GEN
+      pm.deoliveiradejes@uniandes.edu.co                      CLA100108
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C2_LP\C2_E1.gms
+Output     C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C2_LP\C2_E1.lst

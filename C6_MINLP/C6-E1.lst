@@ -1,0 +1,816 @@
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 09/13/24 14:41:15 Page 1
+C6_E1 Despacho óptimo de una industria con equipamiento de almacenamiento y autoproducción de energía eléctrica
+C o m p i l a t i o n
+
+
+   2   
+   3  Set
+   4     t 'hours'         / t1*t24 /;
+   5   
+   6  Table data(t,*)
+   7      lambda  Plu     Ppvu
+   8   t1 0.11    0.68    0.00
+   9   t2 0.11    0.70    0.00
+  10   t3 0.11    0.68    0.00
+  11   t4 0.11    0.68    0.00
+  12   t5 0.11    0.68    0.00
+  13   t6 0.12    0.72    0.00
+  14   t7 0.15    0.85    0.15
+  15   t8 0.17    0.90    0.35
+  16   t9 0.18    0.97    0.55
+  17  t10 0.16    0.97    0.72
+  18  t11 0.15    0.98    0.85
+  19  t12 0.13    1.00    0.96
+  20  t13 0.13    0.99    1.00
+  21  t14 0.13    0.92    0.92
+  22  t15 0.14    0.90    0.87
+  23  t16 0.13    0.95    0.73
+  24  t17 0.18    0.94    0.55
+  25  t18 0.14    1.00    0.35
+  26  t19 0.14    0.96    0.15
+  27  t20 0.14    0.94    0.00
+  28  t21 0.15    0.82    0.00
+  29  t22 0.15    0.77    0.00
+  30  t23 0.15    0.76    0.00
+  31  t24 0.12    0.72    0.00;
+  32  * -----------------------------------------------------
+  33   
+  34  Variable
+  35     Benefit      'Benefit Eur/month'
+  36     SOC(t)      'State of Charge  kWh'
+  37     Pd(t)       'Power discharge  kW'
+  38     Pch(t)      'Power Charge  kW'
+  39     Pb(t)       'Power bought from the public grid kW'
+  40     Ps(t)       'Power sold to the public grid kW';
+  41   
+  42  Binary Variable
+  43     w1(t)
+  44     w3(t)
+  45   
+  46   
+  47  Scalar
+  48     Ppvmax    / 500/
+  49     Plmax     / 1000 /
+  50     SOCf      / 300  /
+  51     C         / 3000  /
+  52     eff_c     / 0.95 /
+  53     eff_d     / 0.92 /
+  54     CR_c      / 0.3 /
+  55     CR_d      / 0.2 /
+  56     DoD       /0.8/
+  57     psi       /0.05/
+  58     Pmax      /5000/
+  59     kappa     /36/;
+  60   
+  61   
+  62  SOC.up(t)     = ((1-DoD)/2+DoD)*C;
+  63  SOC.lo(t)     = ((1-DoD)/2)*C;
+  64  SOC.fx('t24') =     SOCf;
+  65  Pch.lo(t) = 0;
+  66  Pd.lo(t) = 0;
+  67  Pb.lo(t) = 0;
+  68  Ps.lo(t) = 0;
+  69   
+  70   
+  71  Equation Bcalc, balance1, r1, r2, r3, r4, r5;
+  72   
+  73  Bcalc..         Benefit =e=  -0*kappa*smax(t,pb(t)+ps(t))+30*sum((t), (data(t,'lambda')*ps(t)-(data(t,'lambda')+psi)*pb(t)));
+  74  balance1(t)..   Pd(t) + Pb(t) + Ppvmax*data(t,'Ppvu') =e= Pch(t) +Ps(t) + Plmax*data(t,'Plu');
+  75  r1(t)..         SOC(t) =e= SOCf$(ord(t)=1) + SOC(t-1)$(ord(t)>1) + Pch(t)*eff_c  - Pd(t)/eff_d;
+  76  r2(t)..  Pch(t)  =l= CR_c*C*w1(t);
+  77  r3(t)..  Pd(t) =l= CR_d*C*(1-w1(t));
+  78  r4(t)..  Pb(t) =l= Pmax*w3(t);
+  79  r5(t)..  Ps(t) =l= Pmax*(1-w3(t));
+  80   
+  81   
+  82  Model modelCe / all /;
+  83  solve modelCe using MINLP maximizing Benefit
+  84   
+  85  execute_unload 'C6_E1.gdx';
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.3.0 125a0e22 WEX-WEI
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 09/13/24 14:41:15 Page 2
+C6_E1 Despacho óptimo de una industria con equipamiento de almacenamiento y autoproducción de energía eléctrica
+Equation Listing    SOLVE modelCe Using MINLP From line 85
+
+
+---- Bcalc  =E=  
+
+Bcalc..  Benefit + 4.8*Pb(t1) + 4.8*Pb(t2) + 4.8*Pb(t3) + 4.8*Pb(t4) + 4.8*Pb(t5) + 5.1*Pb(t6) + 6*Pb(t7) + 6.6*Pb(t8) + 6.9*Pb(t9) + 6.3*Pb(t10) + 6*Pb(t11) + 5.4*Pb(t12) + 5.4*Pb(t13) + 5.4*Pb(t14) + 5.7*Pb(t15) + 5.4*Pb(t16) + 6.9*Pb(t17) + 5.7*Pb(t18) + 5.7*Pb(t19) + 5.7*Pb(t20) + 6*Pb(t21) + 6*Pb(t22) + 6*Pb(t23) + 5.1*Pb(t24) - 3.3*Ps(t1) - 3.3*Ps(t2) - 3.3*Ps(t3) - 3.3*Ps(t4) - 3.3*Ps(t5) - 3.6*Ps(t6) - 4.5*Ps(t7) - 5.1*Ps(t8) - 5.4*Ps(t9) - 4.8*Ps(t10) - 4.5*Ps(t11) - 3.9*Ps(t12) - 3.9*Ps(t13) - 3.9*Ps(t14) - 4.2*Ps(t15) - 3.9*Ps(t16) - 5.4*Ps(t17) - 4.2*Ps(t18) - 4.2*Ps(t19) - 4.2*Ps(t20) - 4.5*Ps(t21) - 4.5*Ps(t22) - 4.5*Ps(t23) - 3.6*Ps(t24) =E= 0 ; (LHS = 0)
+     
+
+---- balance1  =E=  
+
+balance1(t1)..  Pd(t1) - Pch(t1) + Pb(t1) - Ps(t1) =E= 680 ; (LHS = 0, INFES = 680 ****)
+     
+balance1(t2)..  Pd(t2) - Pch(t2) + Pb(t2) - Ps(t2) =E= 700 ; (LHS = 0, INFES = 700 ****)
+     
+balance1(t3)..  Pd(t3) - Pch(t3) + Pb(t3) - Ps(t3) =E= 680 ; (LHS = 0, INFES = 680 ****)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r1  =E=  
+
+r1(t1)..  SOC(t1) + 1.08695652173913*Pd(t1) - 0.95*Pch(t1) =E= 300 ; (LHS = 300)
+     
+r1(t2)..  - SOC(t1) + SOC(t2) + 1.08695652173913*Pd(t2) - 0.95*Pch(t2) =E= 0 ; (LHS = 0)
+     
+r1(t3)..  - SOC(t2) + SOC(t3) + 1.08695652173913*Pd(t3) - 0.95*Pch(t3) =E= 0 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r2  =L=  
+
+r2(t1)..  Pch(t1) - 900*w1(t1) =L= 0 ; (LHS = 0)
+     
+r2(t2)..  Pch(t2) - 900*w1(t2) =L= 0 ; (LHS = 0)
+     
+r2(t3)..  Pch(t3) - 900*w1(t3) =L= 0 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r3  =L=  
+
+r3(t1)..  Pd(t1) + 600*w1(t1) =L= 600 ; (LHS = 0)
+     
+r3(t2)..  Pd(t2) + 600*w1(t2) =L= 600 ; (LHS = 0)
+     
+r3(t3)..  Pd(t3) + 600*w1(t3) =L= 600 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r4  =L=  
+
+r4(t1)..  Pb(t1) - 5000*w3(t1) =L= 0 ; (LHS = 0)
+     
+r4(t2)..  Pb(t2) - 5000*w3(t2) =L= 0 ; (LHS = 0)
+     
+r4(t3)..  Pb(t3) - 5000*w3(t3) =L= 0 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r5  =L=  
+
+r5(t1)..  Ps(t1) + 5000*w3(t1) =L= 5000 ; (LHS = 0)
+     
+r5(t2)..  Ps(t2) + 5000*w3(t2) =L= 5000 ; (LHS = 0)
+     
+r5(t3)..  Ps(t3) + 5000*w3(t3) =L= 5000 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 09/13/24 14:41:15 Page 3
+C6_E1 Despacho óptimo de una industria con equipamiento de almacenamiento y autoproducción de energía eléctrica
+Column Listing      SOLVE modelCe Using MINLP From line 85
+
+
+---- Benefit  Benefit Eur/month
+
+Benefit
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       Bcalc
+
+
+---- SOC  State of Charge  kWh
+
+SOC(t1)
+                (.LO, .L, .UP, .M = 300, 300, 2700, 0)
+        1       r1(t1)
+       -1       r1(t2)
+        0       (OLD LEVEL ****)
+
+SOC(t2)
+                (.LO, .L, .UP, .M = 300, 300, 2700, 0)
+        1       r1(t2)
+       -1       r1(t3)
+        0       (OLD LEVEL ****)
+
+SOC(t3)
+                (.LO, .L, .UP, .M = 300, 300, 2700, 0)
+        1       r1(t3)
+       -1       r1(t4)
+        0       (OLD LEVEL ****)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- Pd  Power discharge  kW
+
+Pd(t1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance1(t1)
+        1.087   r1(t1)
+        1       r3(t1)
+
+Pd(t2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance1(t2)
+        1.087   r1(t2)
+        1       r3(t2)
+
+Pd(t3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance1(t3)
+        1.087   r1(t3)
+        1       r3(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- Pch  Power Charge  kW
+
+Pch(t1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance1(t1)
+       -0.95    r1(t1)
+        1       r2(t1)
+
+Pch(t2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance1(t2)
+       -0.95    r1(t2)
+        1       r2(t2)
+
+Pch(t3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance1(t3)
+       -0.95    r1(t3)
+        1       r2(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- Pb  Power bought from the public grid kW
+
+Pb(t1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        4.8     Bcalc
+        1       balance1(t1)
+        1       r4(t1)
+
+Pb(t2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        4.8     Bcalc
+        1       balance1(t2)
+        1       r4(t2)
+
+Pb(t3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        4.8     Bcalc
+        1       balance1(t3)
+        1       r4(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- Ps  Power sold to the public grid kW
+
+Ps(t1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -3.3     Bcalc
+       -1       balance1(t1)
+        1       r5(t1)
+
+Ps(t2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -3.3     Bcalc
+       -1       balance1(t2)
+        1       r5(t2)
+
+Ps(t3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -3.3     Bcalc
+       -1       balance1(t3)
+        1       r5(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- w1  
+
+w1(t1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     -900       r2(t1)
+      600       r3(t1)
+
+w1(t2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     -900       r2(t2)
+      600       r3(t2)
+
+w1(t3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+     -900       r2(t3)
+      600       r3(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- w3  
+
+w3(t1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -5000       r4(t1)
+     5000       r5(t1)
+
+w3(t2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -5000       r4(t2)
+     5000       r5(t2)
+
+w3(t3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -5000       r4(t3)
+     5000       r5(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 09/13/24 14:41:15 Page 4
+C6_E1 Despacho óptimo de una industria con equipamiento de almacenamiento y autoproducción de energía eléctrica
+Range Statistics    SOLVE modelCe Using MINLP From line 85
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 3.000E+02, 5.000E+03] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 2.700E+03] - Zero values observed as well
+Matrix    [min, max] : [ 9.500E-01, 5.000E+03]
+
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 09/13/24 14:41:15 Page 5
+C6_E1 Despacho óptimo de una industria con equipamiento de almacenamiento y autoproducción de energía eléctrica
+Model Statistics    SOLVE modelCe Using MINLP From line 85
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           7     SINGLE EQUATIONS          145
+BLOCKS OF VARIABLES           8     SINGLE VARIABLES          169  23 projected
+NON ZERO ELEMENTS           432     NON LINEAR N-Z              0
+CODE LENGTH                   0     CONSTANT POOL              16     DISCRETE VARIABLES         48
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  47.3.0 125a0e22 WEX-WEI
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 09/13/24 14:41:15 Page 6
+C6_E1 Despacho óptimo de una industria con equipamiento de almacenamiento y autoproducción de energía eléctrica
+Solution Report     SOLVE modelCe Using MINLP From line 85
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   modelCe             OBJECTIVE  Benefit
+     TYPE    MINLP               DIRECTION  MAXIMIZE
+     SOLVER  DICOPT              FROM LINE  85
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE           -89997.0858
+
+ RESOURCE USAGE, LIMIT          0.078 10000000000.000
+ ITERATION COUNT, LIMIT        13    2147483647
+ EVALUATION ERRORS             NA             0
+-------------------------------------------------------------------------------
+Dicopt 2         47.3.0 125a0e22 Jul 15, 2024          WEI x86 64bit/MS Window
+-------------------------------------------------------------------------------
+*** This solver runs with a community license. No commercial use.
+--- DICOPT: No non-linearities found: executing the MIP solver
+
+      The model is linear (possibly with integer variables).
+      We will call the MIP solver to solve it for you.
+
+      Advice: use a MIP solver to solve this problem.
+*** This solver runs with a community license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.54 Mb (peak 0.54 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.02 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.08sec (det. 0.84 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.16 ticks)
+
+
+Proven optimal solution
+MIP Solution:       -89997.085812    (13 iterations, 0 nodes)
+Final Solve:        -89997.085812    (4 iterations)
+
+Best possible:      -89997.085812
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Bcalc               .              .              .             1.0000      
+
+---- EQU balance1  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1        680.0000       680.0000       680.0000        -4.8000      
+t2        700.0000       700.0000       700.0000        -4.8000      
+t3        680.0000       680.0000       680.0000        -4.8000      
+t4        680.0000       680.0000       680.0000        -4.8000      
+t5        680.0000       680.0000       680.0000        -4.8000      
+t6        720.0000       720.0000       720.0000        -5.1000      
+t7        775.0000       775.0000       775.0000        -6.0000      
+t8        725.0000       725.0000       725.0000        -6.6000      
+t9        695.0000       695.0000       695.0000        -6.9000      
+t10       610.0000       610.0000       610.0000        -6.3000      
+t11       555.0000       555.0000       555.0000        -6.0000      
+t12       520.0000       520.0000       520.0000        -5.4000      
+t13       490.0000       490.0000       490.0000        -5.4000      
+t14       460.0000       460.0000       460.0000        -5.4000      
+t15       465.0000       465.0000       465.0000        -5.7000      
+t16       585.0000       585.0000       585.0000        -5.4000      
+t17       665.0000       665.0000       665.0000        -6.9000      
+t18       825.0000       825.0000       825.0000        -5.7000      
+t19       885.0000       885.0000       885.0000        -5.7000      
+t20       940.0000       940.0000       940.0000        -5.7000      
+t21       820.0000       820.0000       820.0000        -6.0000      
+t22       770.0000       770.0000       770.0000        -6.0000      
+t23       760.0000       760.0000       760.0000        -6.0000      
+t24       720.0000       720.0000       720.0000        -5.1000      
+
+---- EQU r1  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1        300.0000       300.0000       300.0000         5.0526      
+t2           .              .              .             5.0526      
+t3           .              .              .             5.0526      
+t4           .              .              .             5.0526      
+t5           .              .              .             5.0526      
+t6           .              .              .             5.0526      
+t7           .              .              .             5.0526      
+t8           .              .              .             5.6842      
+t9           .              .              .             5.6842      
+t10          .              .              .             5.6842      
+t11          .              .              .             5.6842      
+t12          .              .              .             5.6842      
+t13          .              .              .             5.6842      
+t14          .              .              .             5.6842      
+t15          .              .              .             5.6842      
+t16          .              .              .             5.6842      
+t17          .              .              .             5.6842      
+t18          .              .              .             4.6920      
+t19          .              .              .             4.6920      
+t20          .              .              .             4.6920      
+t21          .              .              .             4.6920      
+t22          .              .              .             4.6920      
+t23          .              .              .             4.6920      
+t24          .              .              .             4.6920      
+
+---- EQU r2  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF             .              .             EPS         
+t2         -INF         -900.0000          .              .          
+t3         -INF             .              .             EPS         
+t4         -INF         -173.6842          .              .          
+t5         -INF         -900.0000          .              .          
+t6         -INF         -900.0000          .              .          
+t7         -INF         -900.0000          .              .          
+t8         -INF             .              .              .          
+t9         -INF             .              .              .          
+t10        -INF             .              .              .          
+t11        -INF         -900.0000          .              .          
+t12        -INF         -680.3204          .              .          
+t13        -INF         -900.0000          .              .          
+t14        -INF         -900.0000          .              .          
+t15        -INF         -900.0000          .              .          
+t16        -INF         -900.0000          .              .          
+t17        -INF             .              .              .          
+t18        -INF         -900.0000          .              .          
+t19        -INF         -900.0000          .              .          
+t20        -INF         -900.0000          .              .          
+t21        -INF         -900.0000          .              .          
+t22        -INF         -900.0000          .              .          
+t23        -INF         -900.0000          .              .          
+t24        -INF             .              .              .          
+
+---- EQU r3  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF          600.0000       600.0000          .          
+t2         -INF          600.0000       600.0000          .          
+t3         -INF          600.0000       600.0000          .          
+t4         -INF          600.0000       600.0000          .          
+t5         -INF          600.0000       600.0000          .          
+t6         -INF          600.0000       600.0000          .          
+t7         -INF          600.0000       600.0000         0.5080      
+t8         -INF          600.0000       600.0000         0.4215      
+t9         -INF          600.0000       600.0000         0.7215      
+t10        -INF          600.0000       600.0000         0.1215      
+t11        -INF          600.0000       600.0000          .          
+t12        -INF          600.0000       600.0000          .          
+t13        -INF          600.0000       600.0000          .          
+t14        -INF          600.0000       600.0000          .          
+t15        -INF          600.0000       600.0000          .          
+t16        -INF          600.0000       600.0000          .          
+t17        -INF          600.0000       600.0000         0.7215      
+t18        -INF          600.0000       600.0000         0.6000      
+t19        -INF          600.0000       600.0000         0.6000      
+t20        -INF          600.0000       600.0000         0.6000      
+t21        -INF          600.0000       600.0000         0.9000      
+t22        -INF          600.0000       600.0000         0.9000      
+t23        -INF          600.0000       600.0000         0.9000      
+t24        -INF             .           600.0000          .          
+
+---- EQU r4  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF        -3420.0000          .              .          
+t2         -INF        -4300.0000          .              .          
+t3         -INF        -3420.0000          .              .          
+t4         -INF        -3593.6842          .              .          
+t5         -INF        -4320.0000          .              .          
+t6         -INF        -4280.0000          .              .          
+t7         -INF        -4225.0000          .              .          
+t8         -INF        -4875.0000          .              .          
+t9         -INF        -4905.0000          .              .          
+t10        -INF        -4990.0000          .              .          
+t11        -INF        -4445.0000          .              .          
+t12        -INF        -4260.3204          .              .          
+t13        -INF        -4510.0000          .              .          
+t14        -INF        -4540.0000          .              .          
+t15        -INF        -4535.0000          .              .          
+t16        -INF        -4415.0000          .              .          
+t17        -INF        -4935.0000          .              .          
+t18        -INF        -4175.0000          .              .          
+t19        -INF        -4115.0000          .              .          
+t20        -INF        -4060.0000          .              .          
+t21        -INF        -4180.0000          .              .          
+t22        -INF        -4230.0000          .              .          
+t23        -INF        -4240.0000          .              .          
+t24        -INF        -4280.0000          .              .          
+
+---- EQU r5  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF         5000.0000      5000.0000          .          
+t2         -INF         5000.0000      5000.0000          .          
+t3         -INF         5000.0000      5000.0000          .          
+t4         -INF         5000.0000      5000.0000          .          
+t5         -INF         5000.0000      5000.0000          .          
+t6         -INF         5000.0000      5000.0000          .          
+t7         -INF         5000.0000      5000.0000          .          
+t8         -INF         5000.0000      5000.0000          .          
+t9         -INF         5000.0000      5000.0000          .          
+t10        -INF         5000.0000      5000.0000          .          
+t11        -INF         5000.0000      5000.0000          .          
+t12        -INF         5000.0000      5000.0000          .          
+t13        -INF         5000.0000      5000.0000          .          
+t14        -INF         5000.0000      5000.0000          .          
+t15        -INF         5000.0000      5000.0000          .          
+t16        -INF         5000.0000      5000.0000          .          
+t17        -INF         5000.0000      5000.0000          .          
+t18        -INF         5000.0000      5000.0000          .          
+t19        -INF         5000.0000      5000.0000          .          
+t20        -INF         5000.0000      5000.0000          .          
+t21        -INF         5000.0000      5000.0000          .          
+t22        -INF         5000.0000      5000.0000          .          
+t23        -INF         5000.0000      5000.0000          .          
+t24        -INF         5000.0000      5000.0000          .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Benefit           -INF       -89997.0858        +INF             .          
+
+  Benefit  Benefit Eur/month
+
+---- VAR SOC  State of Charge  kWh
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1        300.0000      1155.0000      2700.0000          .          
+t2        300.0000      1155.0000      2700.0000          .          
+t3        300.0000      2010.0000      2700.0000          .          
+t4        300.0000      2700.0000      2700.0000          .          
+t5        300.0000      2700.0000      2700.0000          .          
+t6        300.0000      2700.0000      2700.0000          .          
+t7        300.0000      2700.0000      2700.0000         0.6316      
+t8        300.0000      2047.8261      2700.0000          .          
+t9        300.0000      1395.6522      2700.0000          .          
+t10       300.0000       743.4783      2700.0000          .          
+t11       300.0000       743.4783      2700.0000          .          
+t12       300.0000       952.1739      2700.0000          .          
+t13       300.0000       952.1739      2700.0000          .          
+t14       300.0000       952.1739      2700.0000          .          
+t15       300.0000       952.1739      2700.0000          .          
+t16       300.0000       952.1739      2700.0000          .          
+t17       300.0000       300.0000      2700.0000        -0.9922      
+t18       300.0000       300.0000      2700.0000          .          
+t19       300.0000       300.0000      2700.0000          .          
+t20       300.0000       300.0000      2700.0000          .          
+t21       300.0000       300.0000      2700.0000          .          
+t22       300.0000       300.0000      2700.0000          .          
+t23       300.0000       300.0000      2700.0000          .          
+t24       300.0000       300.0000       300.0000        -4.6920      
+
+---- VAR Pd  Power discharge  kW
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .              .            +INF           -0.6920      
+t2           .              .            +INF           -0.6920      
+t3           .              .            +INF           -0.6920      
+t4           .              .            +INF           -0.6920      
+t5           .              .            +INF           -0.6920      
+t6           .              .            +INF           -0.3920      
+t7           .              .            +INF             .          
+t8           .           600.0000        +INF             .          
+t9           .           600.0000        +INF             .          
+t10          .           600.0000        +INF             .          
+t11          .              .            +INF           -0.1785      
+t12          .              .            +INF           -0.7785      
+t13          .              .            +INF           -0.7785      
+t14          .              .            +INF           -0.7785      
+t15          .              .            +INF           -0.4785      
+t16          .              .            +INF           -0.7785      
+t17          .           600.0000        +INF             .          
+t18          .              .            +INF             .          
+t19          .              .            +INF             .          
+t20          .              .            +INF             .          
+t21          .              .            +INF             .          
+t22          .              .            +INF             .          
+t23          .              .            +INF             .          
+t24          .              .            +INF             .          
+
+---- VAR Pch  Power Charge  kW
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .           900.0000        +INF             .          
+t2           .              .            +INF            EPS         
+t3           .           900.0000        +INF             .          
+t4           .           726.3158        +INF             .          
+t5           .              .            +INF            EPS         
+t6           .              .            +INF           -0.3000      
+t7           .              .            +INF           -1.2000      
+t8           .              .            +INF           -1.2000      
+t9           .              .            +INF           -1.5000      
+t10          .              .            +INF           -0.9000      
+t11          .              .            +INF           -0.6000      
+t12          .           219.6796        +INF             .          
+t13          .              .            +INF      -8.88178E-16      
+t14          .              .            +INF      -8.88178E-16      
+t15          .              .            +INF           -0.3000      
+t16          .              .            +INF      -8.88178E-16      
+t17          .              .            +INF           -1.5000      
+t18          .              .            +INF           -1.2426      
+t19          .              .            +INF           -1.2426      
+t20          .              .            +INF           -1.2426      
+t21          .              .            +INF           -1.5426      
+t22          .              .            +INF           -1.5426      
+t23          .              .            +INF           -1.5426      
+t24          .              .            +INF           -0.6426      
+
+---- VAR Pb  Power bought from the public grid kW
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .          1580.0000        +INF             .          
+t2           .           700.0000        +INF             .          
+t3           .          1580.0000        +INF             .          
+t4           .          1406.3158        +INF             .          
+t5           .           680.0000        +INF             .          
+t6           .           720.0000        +INF             .          
+t7           .           775.0000        +INF             .          
+t8           .           125.0000        +INF             .          
+t9           .            95.0000        +INF             .          
+t10          .            10.0000        +INF             .          
+t11          .           555.0000        +INF             .          
+t12          .           739.6796        +INF             .          
+t13          .           490.0000        +INF             .          
+t14          .           460.0000        +INF             .          
+t15          .           465.0000        +INF             .          
+t16          .           585.0000        +INF             .          
+t17          .            65.0000        +INF             .          
+t18          .           825.0000        +INF             .          
+t19          .           885.0000        +INF             .          
+t20          .           940.0000        +INF             .          
+t21          .           820.0000        +INF             .          
+t22          .           770.0000        +INF             .          
+t23          .           760.0000        +INF             .          
+t24          .           720.0000        +INF             .          
+
+---- VAR Ps  Power sold to the public grid kW
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .              .            +INF           -1.5000      
+t2           .              .            +INF           -1.5000      
+t3           .              .            +INF           -1.5000      
+t4           .              .            +INF           -1.5000      
+t5           .              .            +INF           -1.5000      
+t6           .              .            +INF           -1.5000      
+t7           .              .            +INF           -1.5000      
+t8           .              .            +INF           -1.5000      
+t9           .              .            +INF           -1.5000      
+t10          .              .            +INF           -1.5000      
+t11          .              .            +INF           -1.5000      
+t12          .              .            +INF           -1.5000      
+t13          .              .            +INF           -1.5000      
+t14          .              .            +INF           -1.5000      
+t15          .              .            +INF           -1.5000      
+t16          .              .            +INF           -1.5000      
+t17          .              .            +INF           -1.5000      
+t18          .              .            +INF           -1.5000      
+t19          .              .            +INF           -1.5000      
+t20          .              .            +INF           -1.5000      
+t21          .              .            +INF           -1.5000      
+t22          .              .            +INF           -1.5000      
+t23          .              .            +INF           -1.5000      
+t24          .              .            +INF           -1.5000      
+
+---- VAR w1  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .             1.0000         1.0000         EPS         
+t2           .             1.0000         1.0000         EPS         
+t3           .             1.0000         1.0000         EPS         
+t4           .             1.0000         1.0000         EPS         
+t5           .             1.0000         1.0000         EPS         
+t6           .             1.0000         1.0000         EPS         
+t7           .             1.0000         1.0000      -304.8055      
+t8           .              .             1.0000      -252.9062      
+t9           .              .             1.0000      -432.9062      
+t10          .              .             1.0000       -72.9062      
+t11          .             1.0000         1.0000         EPS         
+t12          .             1.0000         1.0000         EPS         
+t13          .             1.0000         1.0000         EPS         
+t14          .             1.0000         1.0000         EPS         
+t15          .             1.0000         1.0000         EPS         
+t16          .             1.0000         1.0000         EPS         
+t17          .              .             1.0000      -432.9062      
+t18          .             1.0000         1.0000      -360.0000      
+t19          .             1.0000         1.0000      -360.0000      
+t20          .             1.0000         1.0000      -360.0000      
+t21          .             1.0000         1.0000      -540.0000      
+t22          .             1.0000         1.0000      -540.0000      
+t23          .             1.0000         1.0000      -540.0000      
+t24          .              .             1.0000         EPS         
+
+---- VAR w3  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .             1.0000         1.0000         EPS         
+t2           .             1.0000         1.0000         EPS         
+t3           .             1.0000         1.0000         EPS         
+t4           .             1.0000         1.0000         EPS         
+t5           .             1.0000         1.0000         EPS         
+t6           .             1.0000         1.0000         EPS         
+t7           .             1.0000         1.0000         EPS         
+t8           .             1.0000         1.0000         EPS         
+t9           .             1.0000         1.0000         EPS         
+t10          .             1.0000         1.0000         EPS         
+t11          .             1.0000         1.0000         EPS         
+t12          .             1.0000         1.0000         EPS         
+t13          .             1.0000         1.0000         EPS         
+t14          .             1.0000         1.0000         EPS         
+t15          .             1.0000         1.0000         EPS         
+t16          .             1.0000         1.0000         EPS         
+t17          .             1.0000         1.0000         EPS         
+t18          .             1.0000         1.0000         EPS         
+t19          .             1.0000         1.0000         EPS         
+t20          .             1.0000         1.0000         EPS         
+t21          .             1.0000         1.0000         EPS         
+t22          .             1.0000         1.0000         EPS         
+t23          .             1.0000         1.0000         EPS         
+t24          .             1.0000         1.0000         EPS         
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0     ERRORS
+GAMS 47.3.0  125a0e22 Jul 15, 2024          WEX-WEI x86 64bit/MS Windows - 09/13/24 14:41:15 Page 7
+C6_E1 Despacho óptimo de una industria con equipamiento de almacenamiento y autoproducción de energía eléctrica
+E x e c u t i o n
+
+
+EXECUTION TIME       =        0.266 SECONDS      4 MB  47.3.0 125a0e22 WEX-WEI
+
+
+USER: Academic User                                  G240823+0003Ac-GEN
+      pm.deoliveiradejes@uniandes.edu.co                      CLA100108
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C6_MINLP\C6-E1.gms
+Output     C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C6_MINLP\C6-E1.lst

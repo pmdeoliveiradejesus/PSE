@@ -1,0 +1,78 @@
+--- Job C3_E1.gms Start 08/23/24 14:02:27 47.3.0 125a0e22 WEX-WEI x86 64bit/MS Windows
+--- Applying:
+    C:\GAMS\47\gmsprmNT.txt
+--- GAMS Parameters defined
+    Input C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C3_QP\C3_E1.gms
+    PageSize 0
+    ScrDir C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C3_QP\225a\
+    SysDir C:\GAMS\47\
+    LogOption 3
+    ErrMsg 1
+    ErrorLog 99
+    IDE 1
+    GDX C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C3_QP\C3_E1.gdx
+    LstTitleLeftAligned 1
+Licensee: Academic User                                  G240823+0003Ac-GEN
+          pm.deoliveiradejes@uniandes.edu.co                      CLA100108
+          225a\gamslice.dat
+          node:36839801 mem:8 cores:4 ipport:61925                         
+          Community license for demonstration and instructional purposes only
+Processor information: 1 socket(s), 4 core(s), and 8 thread(s) available
+GAMS 47.3.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
+--- Starting compilation
+--- C3_E1.gms(25) 3 Mb
+--- Starting execution: elapsed 0:00:00.031
+--- C3_E1.gms(22) 4 Mb
+--- Generating QCP model ED
+--- C3_E1.gms(25) 6 Mb
+---   2 rows  3 columns  5 non-zeroes
+---   14 nl-code  2 nl-non-zeroes
+--- Range statistics (absolute non-zero finite values)
+--- RHS       [min, max] : [ 3.000E+02, 6.000E+02]
+--- Bound     [min, max] : [ 3.000E+02, 4.000E+02] - Zero values observed as well
+--- Matrix    [min, max] : [ 1.000E+00, 2.500E+01]
+--- C3_E1.gms(25) 4 Mb
+--- Executing CONOPT (Solvelink=2): elapsed 0:00:00.031
+
+CONOPT 4         47.3.0 125a0e22 Jul 15, 2024          WEI x86 64bit/MS Window
+
+--- *** This solver runs with a community license. No commercial use.
+ 
+ 
+    C O N O P T   version 4.35
+    Copyright (C) GAMS Software GmbH
+                  GAMS Development Corporation
+ 
+    Will use up to 8 threads.
+ 
+ 
+    The user model has 2 constraints and 3 variables
+    with 5 Jacobian elements, 2 of which are nonlinear.
+    The Hessian of the Lagrangian has 2 elements on the diagonal,
+    0 elements below the diagonal, and 2 nonlinear variables.
+ 
+    Iter Phase   Ninf   Infeasibility   RGmax      NSB   Step  InItr MX OK
+       0   0          9.0000000000E+02 (Input point)
+ 
+    The post-triangular part of the model has 1 constraints and variables.
+ 
+    Preprocessed model has 1 constraints and 2 variables
+    with 2 Jacobian elements, 0 of which are nonlinear.
+ 
+    Iter Phase   Ninf   Infeasibility   RGmax      NSB   Step  InItr MX OK
+                      1.0000000000E+02 (Full preprocessed model)
+                      1.9531250000E-01 (After scaling)
+                      0.0000000000E+00 (After adjusting individual variables)
+ 
+ ** Feasible solution. Value of objective =    20550.0000000
+ 
+    Iter Phase   Ninf     Objective     RGmax      NSB   Step  InItr MX OK
+       1   3          1.9300000000E+04 5.1E+03       1 1.0E+00     1 T  T
+       2   4          1.9300000000E+04 0.0E+00       0
+ 
+ ** Optimal solution. There are no superbasic variables.
+ 
+--- Reading solution for model ED
+--- GDX File C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C3_QP\C3_E1.gdx
+*** Status: Normal completion
+--- Job C3_E1.gms Stop 08/23/24 14:02:27 elapsed 0:00:00.125

@@ -1,0 +1,6 @@
+
+gams: **** Error: Parameter error(s)
+    :             Reading parameter(s) from "command line"
+    :             *** Error Unknown option "gamsgetkey"
+    :             Finished reading from "command line"
+    :             *** Error command line = I "C:\Users\pm.deoliveiradejes\Documents\GitHub\PSE\C2_LP\C2_E1.gms" logoption=3 ide=1 errorlog=99 errmsg=1 pagesize=0 lstTitleleftaligned=1 gamsgetkey=3ab1c0d2-c539-42a6-8be6-d95b1c19a5f4

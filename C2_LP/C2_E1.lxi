@@ -1,0 +1,14 @@
+B 3 C o m p i l a t i o n
+B 26 Equation Listing    SOLVE ED Using LP From line 15
+D 29 eq1
+D 34 eq2
+B 40 Column Listing      SOLVE ED Using LP From line 15
+E 43 P
+E 56 OF
+B 64 Range Statistics    SOLVE ED Using LP From line 15
+B 75 Model Statistics    SOLVE ED Using LP From line 15
+B 88 Solution Report     SOLVE ED Using LP From line 15
+F 121 eq1
+F 122 eq2
+G 124 P
+G 133 OF
