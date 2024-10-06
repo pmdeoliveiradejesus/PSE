@@ -1,0 +1,925 @@
+GAMS 44.1.0  ab065035 Jul 20, 2023          DEX-DEG x86 64bit/macOS - 05/24/24 22:42:46 Page 1
+C8_E1 PV System sizing
+C o m p i l a t i o n
+
+
+   2   
+   3  Set
+   4     t 'hours'         / t1*t24 /;
+   5   
+   6  Table data(t,*)
+   7      lambda  Plu     Ppvu
+   8   t1 0.11    0.68    0.00
+   9   t2 0.11    0.70    0.00
+  10   t3 0.11    0.68    0.00
+  11   t4 0.11    0.68    0.00
+  12   t5 0.11    0.68    0.00
+  13   t6 0.12    0.72    0.00
+  14   t7 0.15    0.85    0.15
+  15   t8 0.17    0.90    0.35
+  16   t9 0.18    0.97    0.55
+  17  t10 0.16    0.97    0.72
+  18  t11 0.15    0.98    0.85
+  19  t12 0.13    1.00    0.96
+  20  t13 0.13    0.99    1.00
+  21  t14 0.13    0.92    0.92
+  22  t15 0.14    0.90    0.87
+  23  t16 0.13    0.95    0.73
+  24  t17 0.18    0.94    0.55
+  25  t18 0.14    1.00    0.35
+  26  t19 0.14    0.96    0.15
+  27  t20 0.14    0.94    0.00
+  28  t21 0.15    0.82    0.00
+  29  t22 0.15    0.77    0.00
+  30  t23 0.15    0.76    0.00
+  31  t24 0.12    0.72    0.00;
+  32  * -----------------------------------------------------
+  33   
+  34     Variable
+  35     npv          'Net present value'
+  36     Pb(t)        'Power bought from the public grid kW'
+  37     Ps(t)        'Power sold to the public grid kW'
+  38     Ppv_inst     'installed PV capacity kW'
+  39     DemCharge    'Max Demand payment'
+  40     EnergyCharge 'Energy component payment'
+  41     Ppv(t)       'PV production'
+  42     Pl(t)        'Load';
+  43   
+  44     Binary Variable
+  45     w1(t)
+  46   
+  47     Scalar
+  48   
+  49     Plmax     / 1000 /
+  50     psi       /0.05/
+  51     Pmax      /5000/
+  52     kappa     /36/
+  53     crf       /0.08024258719/
+  54     CAPEXpvu   /1400/;
+  55   
+  56  Ppv_inst.lo = 0;
+  57  Pb.lo(t) = 0;
+  58  Ps.lo(t) = 0;
+  59   
+  60  Equation Obj, balance,r1,r2, r3,r4, r5, r6;
+  61  Obj..         npv =e= (1/crf)*(DemCharge+EnergyCharge)-CAPEXpvu*Ppv_inst;
+  62  balance(t)..   Pb(t) + Ppv(t) =e= Ps(t) + Pl(t);
+  63  r1..            DemCharge=e=-12*kappa*smax(t,Ps(t)+Pb(t));
+  64  r2..            EnergyCharge=e=365*sum((t), (data(t,'lambda')*ps(t)-(data(t,'lambda')+psi)*pb(t)));
+  65  r3(t)..         Ppv(t) =e= Ppv_inst*data(t,'Ppvu');
+  66  r4(t)..         Pb(t) =l= Pmax*w1(t);
+  67  r5(t)..         Ps(t) =l= Pmax*(1-w1(t));
+  68  r6(t)..         Pl(t) =e= Plmax*data(t,'Plu');
+  69   
+  70  Model modelVPNpv / all /;
+  71  solve modelVPNpv using MINLP maximizing npv
+  72   
+  73  execute_unload 'C8_E1.gdx';
+  74   
+
+
+COMPILATION TIME     =        0.016 SECONDS      3 MB  44.1.0 ab065035 DEX-DEG
+GAMS 44.1.0  ab065035 Jul 20, 2023          DEX-DEG x86 64bit/macOS - 05/24/24 22:42:46 Page 2
+C8_E1 PV System sizing
+Equation Listing    SOLVE modelVPNpv Using MINLP From line 73
+
+
+---- Obj  =E=  
+
+Obj..  npv + 1400*Ppv_inst - 12.4622103426474*DemCharge - 12.4622103426474*EnergyCharge =E= 0 ; (LHS = 0)
+     
+
+---- balance  =E=  
+
+balance(t1)..  Pb(t1) - Ps(t1) + Ppv(t1) - Pl(t1) =E= 0 ; (LHS = 0)
+     
+balance(t2)..  Pb(t2) - Ps(t2) + Ppv(t2) - Pl(t2) =E= 0 ; (LHS = 0)
+     
+balance(t3)..  Pb(t3) - Ps(t3) + Ppv(t3) - Pl(t3) =E= 0 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r1  =E=  
+
+r1..  (0)*Pb(t1) + (0)*Pb(t2) + (0)*Pb(t3) + (0)*Pb(t4) + (0)*Pb(t5) + (0)*Pb(t6) + (0)*Pb(t7) + (0)*Pb(t8) + (0)*Pb(t9) + (0)*Pb(t10) + (0)*Pb(t11) + (0)*Pb(t12) + (0)*Pb(t13) + (0)*Pb(t14) + (0)*Pb(t15) + (0)*Pb(t16) + (0)*Pb(t17) + (0)*Pb(t18) + (0)*Pb(t19) + (0)*Pb(t20) + (0)*Pb(t21) + (0)*Pb(t22) + (0)*Pb(t23) + (0)*Pb(t24) + (0)*Ps(t1) + (0)*Ps(t2) + (0)*Ps(t3) + (0)*Ps(t4) + (0)*Ps(t5) + (0)*Ps(t6) + (0)*Ps(t7) + (0)*Ps(t8) + (0)*Ps(t9) + (0)*Ps(t10) + (0)*Ps(t11) + (0)*Ps(t12) + (0)*Ps(t13) + (0)*Ps(t14) + (0)*Ps(t15) + (0)*Ps(t16) + (0)*Ps(t17) + (0)*Ps(t18) + (0)*Ps(t19) + (0)*Ps(t20) + (0)*Ps(t21) + (0)*Ps(t22) + (0)*Ps(t23) + (0)*Ps(t24) + DemCharge =E= 0 ; (LHS = 0)
+     
+
+---- r2  =E=  
+
+r2..  58.4*Pb(t1) + 58.4*Pb(t2) + 58.4*Pb(t3) + 58.4*Pb(t4) + 58.4*Pb(t5) + 62.05*Pb(t6) + 73*Pb(t7) + 80.3*Pb(t8) + 83.95*Pb(t9) + 76.65*Pb(t10) + 73*Pb(t11) + 65.7*Pb(t12) + 65.7*Pb(t13) + 65.7*Pb(t14) + 69.35*Pb(t15) + 65.7*Pb(t16) + 83.95*Pb(t17) + 69.35*Pb(t18) + 69.35*Pb(t19) + 69.35*Pb(t20) + 73*Pb(t21) + 73*Pb(t22) + 73*Pb(t23) + 62.05*Pb(t24) - 40.15*Ps(t1) - 40.15*Ps(t2) - 40.15*Ps(t3) - 40.15*Ps(t4) - 40.15*Ps(t5) - 43.8*Ps(t6) - 54.75*Ps(t7) - 62.05*Ps(t8) - 65.7*Ps(t9) - 58.4*Ps(t10) - 54.75*Ps(t11) - 47.45*Ps(t12) - 47.45*Ps(t13) - 47.45*Ps(t14) - 51.1*Ps(t15) - 47.45*Ps(t16) - 65.7*Ps(t17) - 51.1*Ps(t18) - 51.1*Ps(t19) - 51.1*Ps(t20) - 54.75*Ps(t21) - 54.75*Ps(t22) - 54.75*Ps(t23) - 43.8*Ps(t24) + EnergyCharge =E= 0 ; (LHS = 0)
+     
+
+---- r3  =E=  
+
+r3(t1)..  Ppv(t1) =E= 0 ; (LHS = 0)
+     
+r3(t2)..  Ppv(t2) =E= 0 ; (LHS = 0)
+     
+r3(t3)..  Ppv(t3) =E= 0 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r4  =L=  
+
+r4(t1)..  Pb(t1) - 5000*w1(t1) =L= 0 ; (LHS = 0)
+     
+r4(t2)..  Pb(t2) - 5000*w1(t2) =L= 0 ; (LHS = 0)
+     
+r4(t3)..  Pb(t3) - 5000*w1(t3) =L= 0 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r5  =L=  
+
+r5(t1)..  Ps(t1) + 5000*w1(t1) =L= 5000 ; (LHS = 0)
+     
+r5(t2)..  Ps(t2) + 5000*w1(t2) =L= 5000 ; (LHS = 0)
+     
+r5(t3)..  Ps(t3) + 5000*w1(t3) =L= 5000 ; (LHS = 0)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+
+---- r6  =E=  
+
+r6(t1)..  Pl(t1) =E= 680 ; (LHS = 0, INFES = 680 ****)
+     
+r6(t2)..  Pl(t2) =E= 700 ; (LHS = 0, INFES = 700 ****)
+     
+r6(t3)..  Pl(t3) =E= 680 ; (LHS = 0, INFES = 680 ****)
+     
+REMAINING 21 ENTRIES SKIPPED
+
+GAMS 44.1.0  ab065035 Jul 20, 2023          DEX-DEG x86 64bit/macOS - 05/24/24 22:42:46 Page 3
+C8_E1 PV System sizing
+Column Listing      SOLVE modelVPNpv Using MINLP From line 73
+
+
+---- npv  Net present value
+
+npv
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       Obj
+
+
+---- Pb  Power bought from the public grid kW
+
+Pb(t1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(t1)
+       (0)      r1
+       58.4     r2
+        1       r4(t1)
+
+Pb(t2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(t2)
+       (0)      r1
+       58.4     r2
+        1       r4(t2)
+
+Pb(t3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       balance(t3)
+       (0)      r1
+       58.4     r2
+        1       r4(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- Ps  Power sold to the public grid kW
+
+Ps(t1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance(t1)
+       (0)      r1
+      -40.15    r2
+        1       r5(t1)
+
+Ps(t2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance(t2)
+       (0)      r1
+      -40.15    r2
+        1       r5(t2)
+
+Ps(t3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1       balance(t3)
+       (0)      r1
+      -40.15    r2
+        1       r5(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- Ppv_inst  installed PV capacity kW
+
+Ppv_inst
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+     1400       Obj
+       -0.15    r3(t7)
+       -0.35    r3(t8)
+       -0.55    r3(t9)
+       -0.72    r3(t10)
+       -0.85    r3(t11)
+       -0.96    r3(t12)
+       -1       r3(t13)
+       -0.92    r3(t14)
+       -0.87    r3(t15)
+       -0.73    r3(t16)
+       -0.55    r3(t17)
+       -0.35    r3(t18)
+       -0.15    r3(t19)
+
+
+---- DemCharge  Max Demand payment
+
+DemCharge
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+      -12.4622  Obj
+        1       r1
+
+
+---- EnergyCharge  Energy component payment
+
+EnergyCharge
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+      -12.4622  Obj
+        1       r2
+
+
+---- Ppv  PV production
+
+Ppv(t1)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       balance(t1)
+        1       r3(t1)
+
+Ppv(t2)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       balance(t2)
+        1       r3(t2)
+
+Ppv(t3)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       balance(t3)
+        1       r3(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- Pl  Load
+
+Pl(t1)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       balance(t1)
+        1       r6(t1)
+
+Pl(t2)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       balance(t2)
+        1       r6(t2)
+
+Pl(t3)
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+       -1       balance(t3)
+        1       r6(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+
+---- w1  
+
+w1(t1)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -5000       r4(t1)
+     5000       r5(t1)
+
+w1(t2)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -5000       r4(t2)
+     5000       r5(t2)
+
+w1(t3)
+                (.LO, .L, .UP, .M = 0, 0, 1, 0)
+    -5000       r4(t3)
+     5000       r5(t3)
+
+REMAINING 21 ENTRIES SKIPPED
+GAMS 44.1.0  ab065035 Jul 20, 2023          DEX-DEG x86 64bit/macOS - 05/24/24 22:42:46 Page 4
+C8_E1 PV System sizing
+Range Statistics    SOLVE modelVPNpv Using MINLP From line 73
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 6.800E+02, 5.000E+03] - Zero values observed as well
+Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
+Matrix    [min, max] : [ 1.500E-01, 5.000E+03] - Zero values observed as well
+
+GAMS 44.1.0  ab065035 Jul 20, 2023          DEX-DEG x86 64bit/macOS - 05/24/24 22:42:46 Page 5
+C8_E1 PV System sizing
+Model Statistics    SOLVE modelVPNpv Using MINLP From line 73
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           8     SINGLE EQUATIONS          123
+BLOCKS OF VARIABLES           9     SINGLE VARIABLES          124
+NON ZERO ELEMENTS           355     NON LINEAR N-Z             48
+CODE LENGTH                  76     CONSTANT POOL              17     DISCRETE VARIABLES         24
+
+
+GENERATION TIME      =        0.021 SECONDS      4 MB  44.1.0 ab065035 DEX-DEG
+GAMS 44.1.0  ab065035 Jul 20, 2023          DEX-DEG x86 64bit/macOS - 05/24/24 22:42:46 Page 6
+C8_E1 PV System sizing
+Solution Report     SOLVE modelVPNpv Using MINLP From line 73
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   modelVPNpv          OBJECTIVE  npv
+     TYPE    MINLP               DIRECTION  MAXIMIZE
+     SOLVER  DICOPT              FROM LINE  73
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      8 Integer Solution
+**** OBJECTIVE VALUE        -12645991.3136
+
+ RESOURCE USAGE, LIMIT          0.320 10000000000.000
+ ITERATION COUNT, LIMIT       164    2147483647
+ EVALUATION ERRORS              0             0
+-------------------------------------------------------------------------------
+Dicopt 2         44.1.0 ab065035 Jul 20, 2023          DEG x86 64bit/macOS    
+-------------------------------------------------------------------------------
+*** This solver runs with a demo license. No commercial use.
+--- *** This solver runs with a demo license. No commercial use.
+ 
+ 
+    C O N O P T 3   version 3.17N
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+    The model has 124 variables and 123 constraints
+    with 355 Jacobian elements, 48 of which are nonlinear.
+    The Hessian of the Lagrangian has 48 elements on the diagonal,
+    1128 elements below the diagonal, and 48 nonlinear variables.
+ 
+ ** Warning **  The value of LFITER is out of range.
+                LFITER is decreased from 2147483647 to 1000000000.
+ 
+                   Pre-triangular equations:   35
+                   Post-triangular equations:  3
+                   Definitional equations:     11
+ 
+ 
+ ** Feasible solution. Convergence too slow. The change in objective
+    has been less than 3.7942E-05 for 20 consecutive iterations
+ 
+ 
+ ** Warning **  The variance of the derivatives in the final
+                point is large (= 5.1 ). A better scaling or
+                better bounds on the variables will probably
+                help the optimization.
+ 
+ 
+ CONOPT time Total                            0.062 seconds
+   of which: Function evaluations             0.007 = 11.3%
+             1st Derivative evaluations       0.002 =  3.2%
+             Directional 2nd Derivative       0.000 =  0.0%
+ 
+--- DICOPT: NLP Subproblem was non-optimal but feasible.
+
+      An NLP subproblem was not solved to optimality. The solution
+      was feasible however, so this solution was accepted.
+      You may want to rerun the model with a GAMS option
+      OPTION SYSOUT=ON; to display extra solver information.
+      The cycle in which this situation occurred is marked with
+      *Nonopt*.
+
+--- *** This solver runs with a demo license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.53 Mb (peak 0.53 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.01 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.12sec (det. 0.56 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.13 ticks)
+
+
+Proven optimal solution
+MIP Solution:    -11892497.888053    (14 iterations, 0 nodes)
+Final Solve:     -11892497.888053    (13 iterations)
+
+Best possible:   -11892497.888053
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+--- DICOPT: Setting up next NLP
+--- *** This solver runs with a demo license. No commercial use.
+ 
+ 
+    C O N O P T 3   version 3.17N
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+    The model has 124 variables and 123 constraints
+    with 355 Jacobian elements, 48 of which are nonlinear.
+    The Hessian of the Lagrangian has 48 elements on the diagonal,
+    1128 elements below the diagonal, and 48 nonlinear variables.
+ 
+ ** Warning **  The value of LFITER is out of range.
+                LFITER is decreased from 2147483566 to 1000000000.
+ 
+                   Pre-triangular equations:   35
+                   Post-triangular equations:  3
+                   Definitional equations:     11
+ 
+ 
+ ** Optimal solution. There are no superbasic variables.
+ 
+ 
+ CONOPT time Total                            0.003 seconds
+   of which: Function evaluations             0.000 =  0.0%
+             1st Derivative evaluations       0.000 =  0.0%
+ 
+--- GMO Resort Time 0ms
+--- *** This solver runs with a demo license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.53 Mb (peak 0.53 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.02 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.01sec (det. 0.61 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.14 ticks)
+
+
+Proven optimal solution
+MIP Solution:    -12645991.313623    (15 iterations, 0 nodes)
+Final Solve:     -12645991.313623    (14 iterations)
+
+Best possible:   -12645991.313623
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+--- DICOPT: Setting up next NLP
+--- *** This solver runs with a demo license. No commercial use.
+ 
+ 
+    C O N O P T 3   version 3.17N
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+    The model has 124 variables and 123 constraints
+    with 355 Jacobian elements, 48 of which are nonlinear.
+    The Hessian of the Lagrangian has 48 elements on the diagonal,
+    1128 elements below the diagonal, and 48 nonlinear variables.
+ 
+ ** Warning **  The value of LFITER is out of range.
+                LFITER is decreased from 2147483547 to 1000000000.
+ 
+                   Pre-triangular equations:   35
+                   Post-triangular equations:  3
+                   Definitional equations:     11
+ 
+ 
+ ** Feasible solution. Convergence too slow. The change in objective
+    has been less than 3.7938E-05 for 20 consecutive iterations
+ 
+ 
+ ** Warning **  The variance of the derivatives in the final
+                point is large (= 5.1 ). A better scaling or
+                better bounds on the variables will probably
+                help the optimization.
+ 
+ 
+ CONOPT time Total                            0.030 seconds
+   of which: Function evaluations             0.002 =  6.7%
+             1st Derivative evaluations       0.002 =  6.7%
+ 
+--- GMO Resort Time 0ms
+--- *** This solver runs with a demo license. No commercial use.
+--- GMO setup time: 0.00s
+--- GMO memory 0.53 Mb (peak 0.53 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.02 Mb)
+--- Starting Cplex
+
+
+--- MIP status (101): integer optimal solution.
+--- Cplex Time: 0.03sec (det. 0.81 ticks)
+
+--- Returning a primal only solution to GAMS (marginals all set to NA).
+--- Fixing integer variables and solving final LP...
+
+
+--- Fixed MIP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.15 ticks)
+
+
+Proven optimal solution
+MIP Solution:    -13346747.294251    (20 iterations, 0 nodes)
+Final Solve:     -13346747.294251    (14 iterations)
+
+Best possible:   -13346747.294251
+Absolute gap:            0.000000
+Relative gap:            0.000000
+
+--- DICOPT: Setting up next NLP
+--- *** This solver runs with a demo license. No commercial use.
+ 
+ 
+    C O N O P T 3   version 3.17N
+    Copyright (C)   ARKI Consulting and Development A/S
+                    Bagsvaerdvej 246 A
+                    DK-2880 Bagsvaerd, Denmark
+ 
+ 
+    The model has 124 variables and 123 constraints
+    with 355 Jacobian elements, 48 of which are nonlinear.
+    The Hessian of the Lagrangian has 48 elements on the diagonal,
+    1128 elements below the diagonal, and 48 nonlinear variables.
+ 
+ ** Warning **  The value of LFITER is out of range.
+                LFITER is decreased from 2147483487 to 1000000000.
+ 
+                   Pre-triangular equations:   35
+                   Post-triangular equations:  3
+                   Definitional equations:     11
+ 
+ 
+ ** Optimal solution. There are no superbasic variables.
+ 
+ 
+ CONOPT time Total                            0.002 seconds
+   of which: Function evaluations             0.000 =  0.0%
+             1st Derivative evaluations       0.000 =  0.0%
+ 
+--- DICOPT: Stopped on NLP worsening
+
+      The search was stopped because the objective function
+      of the NLP subproblems started to deteriorate.
+
+--- DICOPT: Best integer solution found: -12645991.313623
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Obj                 .              .              .             1.0000      
+
+---- EQU balance  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .              .              .          -727.7931      
+t2           .              .              .          -727.7931      
+t3           .              .              .          -727.7931      
+t4           .              .              .          -727.7931      
+t5           .              .              .          -727.7931      
+t6           .              .              .          -773.2802      
+t7           .              .              .          -909.7414      
+t8           .              .              .         -4347.8025      
+t9           .              .              .          -818.7672      
+t10          .              .              .          -727.7931      
+t11          .              .              .          -682.3060      
+t12          .              .              .          -591.3319      
+t13          .              .              .          4792.3430      
+t14          .              .              .          -591.3319      
+t15          .              .              .          -636.8189      
+t16          .              .              .          -591.3319      
+t17          .              .              .          -818.7672      
+t18          .              .              .          -864.2543      
+t19          .              .              .          -864.2543      
+t20          .              .              .          -864.2543      
+t21          .              .              .          -909.7414      
+t22          .              .              .          -909.7414      
+t23          .              .              .          -909.7414      
+t24          .              .              .          -773.2802      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU r1                  .              .              .            12.4622      
+---- EQU r2                  .              .              .            12.4622      
+
+---- EQU r3  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .              .              .           727.7931      
+t2           .              .              .           727.7931      
+t3           .              .              .           727.7931      
+t4           .              .              .           727.7931      
+t5           .              .              .           727.7931      
+t6           .              .              .           773.2802      
+t7           .              .              .           909.7414      
+t8           .              .              .          4347.8025      
+t9           .              .              .           818.7672      
+t10          .              .              .           727.7931      
+t11          .              .              .           682.3060      
+t12          .              .              .           591.3319      
+t13          .              .              .         -4792.3430      
+t14          .              .              .           591.3319      
+t15          .              .              .           636.8189      
+t16          .              .              .           591.3319      
+t17          .              .              .           818.7672      
+t18          .              .              .           864.2543      
+t19          .              .              .           864.2543      
+t20          .              .              .           864.2543      
+t21          .              .              .           909.7414      
+t22          .              .              .           909.7414      
+t23          .              .              .           909.7414      
+t24          .              .              .           773.2802      
+
+---- EQU r4  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF        -4320.0000          .              .          
+t2         -INF        -4300.0000          .              .          
+t3         -INF        -4320.0000          .              .          
+t4         -INF        -4320.0000          .              .          
+t5         -INF        -4320.0000          .              .          
+t6         -INF        -4280.0000          .              .          
+t7         -INF        -4439.5000          .              .          
+t8         -INF        -4775.5000          .              .          
+t9         -INF             .              .              .          
+t10        -INF             .              .              .          
+t11        -INF             .              .              .          
+t12        -INF             .              .              .          
+t13        -INF             .              .              .          
+t14        -INF             .              .              .          
+t15        -INF             .              .              .          
+t16        -INF             .              .              .          
+t17        -INF             .              .              .          
+t18        -INF        -4675.5000          .              .          
+t19        -INF        -4329.5000          .              .          
+t20        -INF        -4060.0000          .              .          
+t21        -INF        -4180.0000          .              .          
+t22        -INF        -4230.0000          .              .          
+t23        -INF        -4240.0000          .              .          
+t24        -INF        -4280.0000          .              .          
+
+---- EQU r5  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF         5000.0000      5000.0000          .          
+t2         -INF         5000.0000      5000.0000          .          
+t3         -INF         5000.0000      5000.0000          .          
+t4         -INF         5000.0000      5000.0000          .          
+t5         -INF         5000.0000      5000.0000          .          
+t6         -INF         5000.0000      5000.0000          .          
+t7         -INF         5000.0000      5000.0000          .          
+t8         -INF         5000.0000      5000.0000          .          
+t9         -INF           91.5000      5000.0000          .          
+t10        -INF          419.6000      5000.0000          .          
+t11        -INF          660.5000      5000.0000          .          
+t12        -INF          852.8000      5000.0000          .          
+t13        -INF          940.0000      5000.0000          .          
+t14        -INF          855.6000      5000.0000          .          
+t15        -INF          779.1000      5000.0000          .          
+t16        -INF          458.9000      5000.0000          .          
+t17        -INF          121.5000      5000.0000          .          
+t18        -INF         5000.0000      5000.0000          .          
+t19        -INF         5000.0000      5000.0000          .          
+t20        -INF         5000.0000      5000.0000          .          
+t21        -INF         5000.0000      5000.0000          .          
+t22        -INF         5000.0000      5000.0000          .          
+t23        -INF         5000.0000      5000.0000          .          
+t24        -INF         5000.0000      5000.0000          .          
+
+---- EQU r6  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1        680.0000       680.0000       680.0000      -727.7931      
+t2        700.0000       700.0000       700.0000      -727.7931      
+t3        680.0000       680.0000       680.0000      -727.7931      
+t4        680.0000       680.0000       680.0000      -727.7931      
+t5        680.0000       680.0000       680.0000      -727.7931      
+t6        720.0000       720.0000       720.0000      -773.2802      
+t7        850.0000       850.0000       850.0000      -909.7414      
+t8        900.0000       900.0000       900.0000     -4347.8025      
+t9        970.0000       970.0000       970.0000      -818.7672      
+t10       970.0000       970.0000       970.0000      -727.7931      
+t11       980.0000       980.0000       980.0000      -682.3060      
+t12      1000.0000      1000.0000      1000.0000      -591.3319      
+t13       990.0000       990.0000       990.0000      4792.3430      
+t14       920.0000       920.0000       920.0000      -591.3319      
+t15       900.0000       900.0000       900.0000      -636.8189      
+t16       950.0000       950.0000       950.0000      -591.3319      
+t17       940.0000       940.0000       940.0000      -818.7672      
+t18      1000.0000      1000.0000      1000.0000      -864.2543      
+t19       960.0000       960.0000       960.0000      -864.2543      
+t20       940.0000       940.0000       940.0000      -864.2543      
+t21       820.0000       820.0000       820.0000      -909.7414      
+t22       770.0000       770.0000       770.0000      -909.7414      
+t23       760.0000       760.0000       760.0000      -909.7414      
+t24       720.0000       720.0000       720.0000      -773.2802      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR npv               -INF      -1.264599E+7        +INF             .          
+
+  npv  Net present value
+
+---- VAR Pb  Power bought from the public grid kW
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .           680.0000        +INF             .          
+t2           .           700.0000        +INF             .          
+t3           .           680.0000        +INF             .          
+t4           .           680.0000        +INF             .          
+t5           .           680.0000        +INF             .          
+t6           .           720.0000        +INF             .          
+t7           .           560.5000        +INF             .          
+t8           .           224.5000        +INF         3347.0870  NOPT
+t9           .              .            +INF         -227.4353      
+t10          .              .            +INF         -227.4353      
+t11          .              .            +INF         -227.4353      
+t12          .              .            +INF         -227.4353      
+t13          .              .            +INF       -10994.7851      
+t14          .              .            +INF         -227.4353      
+t15          .              .            +INF         -227.4353      
+t16          .              .            +INF         -227.4353      
+t17          .              .            +INF         -227.4353      
+t18          .           324.5000        +INF             .          
+t19          .           670.5000        +INF             .          
+t20          .           940.0000        +INF             .          
+t21          .           820.0000        +INF             .          
+t22          .           770.0000        +INF             .          
+t23          .           760.0000        +INF             .          
+t24          .           720.0000        +INF             .          
+
+---- VAR Ps  Power sold to the public grid kW
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .              .            +INF         -227.4353      
+t2           .              .            +INF         -227.4353      
+t3           .              .            +INF         -227.4353      
+t4           .              .            +INF         -227.4353      
+t5           .              .            +INF         -227.4353      
+t6           .              .            +INF         -227.4353      
+t7           .              .            +INF         -227.4353      
+t8           .              .            +INF        -3574.5223      
+t9           .            91.5000        +INF             .          
+t10          .           419.6000        +INF             .          
+t11          .           660.5000        +INF             .          
+t12          .           852.8000        +INF             .          
+t13          .           940.0000        +INF             .          
+t14          .           855.6000        +INF             .          
+t15          .           779.1000        +INF             .          
+t16          .           458.9000        +INF             .          
+t17          .           121.5000        +INF             .          
+t18          .              .            +INF         -227.4353      
+t19          .              .            +INF         -227.4353      
+t20          .              .            +INF         -227.4353      
+t21          .              .            +INF         -227.4353      
+t22          .              .            +INF         -227.4353      
+t23          .              .            +INF         -227.4353      
+t24          .              .            +INF         -227.4353      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR Ppv_inst            .          1930.0000        +INF             .          
+---- VAR DemCharge         -INF      -406080.0000        +INF             .          
+---- VAR EnergyCha~        -INF      -391851.5900        +INF             .          
+
+  Ppv_inst  installed PV capacity kW
+  DemCharge  Max Demand payment
+  EnergyCharge  Energy component payment
+
+---- VAR Ppv  PV production
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF             .            +INF             .          
+t2         -INF             .            +INF             .          
+t3         -INF             .            +INF             .          
+t4         -INF             .            +INF             .          
+t5         -INF             .            +INF             .          
+t6         -INF             .            +INF             .          
+t7         -INF          289.5000        +INF             .          
+t8         -INF          675.5000        +INF             .          
+t9         -INF         1061.5000        +INF             .          
+t10        -INF         1389.6000        +INF             .          
+t11        -INF         1640.5000        +INF             .          
+t12        -INF         1852.8000        +INF             .          
+t13        -INF         1930.0000        +INF             .          
+t14        -INF         1775.6000        +INF             .          
+t15        -INF         1679.1000        +INF             .          
+t16        -INF         1408.9000        +INF             .          
+t17        -INF         1061.5000        +INF             .          
+t18        -INF          675.5000        +INF             .          
+t19        -INF          289.5000        +INF             .          
+t20        -INF             .            +INF             .          
+t21        -INF             .            +INF             .          
+t22        -INF             .            +INF             .          
+t23        -INF             .            +INF             .          
+t24        -INF             .            +INF             .          
+
+---- VAR Pl  Load
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1         -INF          680.0000        +INF             .          
+t2         -INF          700.0000        +INF             .          
+t3         -INF          680.0000        +INF             .          
+t4         -INF          680.0000        +INF             .          
+t5         -INF          680.0000        +INF             .          
+t6         -INF          720.0000        +INF             .          
+t7         -INF          850.0000        +INF             .          
+t8         -INF          900.0000        +INF             .          
+t9         -INF          970.0000        +INF             .          
+t10        -INF          970.0000        +INF             .          
+t11        -INF          980.0000        +INF             .          
+t12        -INF         1000.0000        +INF             .          
+t13        -INF          990.0000        +INF             .          
+t14        -INF          920.0000        +INF             .          
+t15        -INF          900.0000        +INF             .          
+t16        -INF          950.0000        +INF             .          
+t17        -INF          940.0000        +INF             .          
+t18        -INF         1000.0000        +INF             .          
+t19        -INF          960.0000        +INF             .          
+t20        -INF          940.0000        +INF             .          
+t21        -INF          820.0000        +INF             .          
+t22        -INF          770.0000        +INF             .          
+t23        -INF          760.0000        +INF             .          
+t24        -INF          720.0000        +INF             .          
+
+---- VAR w1  
+
+           LOWER          LEVEL          UPPER         MARGINAL
+
+t1           .             1.0000         1.0000         EPS         
+t2           .             1.0000         1.0000         EPS         
+t3           .             1.0000         1.0000         EPS         
+t4           .             1.0000         1.0000         EPS         
+t5           .             1.0000         1.0000         EPS         
+t6           .             1.0000         1.0000         EPS         
+t7           .             1.0000         1.0000         EPS         
+t8           .             1.0000         1.0000         EPS         
+t9           .              .             1.0000         EPS         
+t10          .              .             1.0000         EPS         
+t11          .              .             1.0000         EPS         
+t12          .              .             1.0000         EPS         
+t13          .              .             1.0000         EPS         
+t14          .              .             1.0000         EPS         
+t15          .              .             1.0000         EPS         
+t16          .              .             1.0000         EPS         
+t17          .              .             1.0000         EPS         
+t18          .             1.0000         1.0000         EPS         
+t19          .             1.0000         1.0000         EPS         
+t20          .             1.0000         1.0000         EPS         
+t21          .             1.0000         1.0000         EPS         
+t22          .             1.0000         1.0000         EPS         
+t23          .             1.0000         1.0000         EPS         
+t24          .             1.0000         1.0000         EPS         
+
+
+**** REPORT SUMMARY :        1     NONOPT ( NOPT)
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+                             0     ERRORS
+GAMS 44.1.0  ab065035 Jul 20, 2023          DEX-DEG x86 64bit/macOS - 05/24/24 22:42:46 Page 7
+C8_E1 PV System sizing
+E x e c u t i o n
+
+
+EXECUTION TIME       =        0.591 SECONDS      4 MB  44.1.0 ab065035 DEX-DEG
+
+
+USER: GAMS Demo license for Paulo Manuel De Oliveira G230726|0002CO-GEN
+      Universidad de los Andes, Colombia                       DL095854
+
+
+**** FILE SUMMARY
+
+Input      /Users/pm.deoliveiradejes/Dropbox (Personal)/Uniandes/2024_20/IELE4100_2024_20 - Planificación de Sistemas de Potencia/C8 - Planeamiento BTM/C8_BTM/C8_E1.gms
+Output     /Users/pm.deoliveiradejes/Dropbox (Personal)/Uniandes/2024_20/IELE4100_2024_20 - Planificación de Sistemas de Potencia/C8 - Planeamiento BTM/C8_BTM/C8_E1.lst
