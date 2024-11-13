@@ -14,7 +14,7 @@ we3= 1;%weight ENS
 %Conductor data		
 %  S1 150mm2   S2 1x400mm2  S3 2x400m2					
 J=[	0.0242      0.0070    0.0099/6	        %Linearized losses coeficient
-	4250     	12250    	24500   		%Capacity (kVA)
+	4.250     	12.250    	24.500   		%Capacity (MVA)
 	0.000257	0.000102	0.000051		%Resistance (Ohm/m)
 	0.000087	0.000095	0.000005		%Reactance (Ohm/m)
 	60.8	    245.2   	490.4		    %Conductor Cost (USD/m)
