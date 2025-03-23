@@ -4,7 +4,7 @@
   Infeasibilities:                              0.000000
   Extended solver steps:                               0
   Total solver iterations:                           530
-  Elapsed runtime seconds:                          0.33
+  Elapsed runtime seconds:                          0.31
 
 
                                 Variable           Value        Reduced Cost
