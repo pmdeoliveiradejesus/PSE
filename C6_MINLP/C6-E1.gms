@@ -37,7 +37,11 @@ Variable
    Pd(t)       'Power discharge  kW'
    Pch(t)      'Power Charge  kW' 
    Pb(t)       'Power bought from the public grid kW'
-   Ps(t)       'Power sold to the public grid kW';
+   Ps(t)       'Power sold to the public grid kW'
+   Pbmax       
+*   SOCf
+;
+   
    
 Binary Variable
    w1(t)     
@@ -56,7 +60,8 @@ Scalar
    DoD       /0.8/
    psi       /0.05/
    Pmax      /5000/
-   kappa     /36/;
+   kappa     /36/
+   lambdax    /0.14/;
    
   
 SOC.up(t)     = ((1-DoD)/2+DoD)*C;
@@ -68,18 +73,20 @@ Pb.lo(t) = 0;
 Ps.lo(t) = 0;
 
 
-Equation Bcalc, balance1, r1, r2, r3, r4, r5;
+Equation Bcalc, balance1, r1, r2, r3, r4, r5, r6;
 
-Bcalc..         Benefit =e=  -0*kappa*smax(t,pb(t)+ps(t))+30*sum((t), (data(t,'lambda')*ps(t)-(data(t,'lambda')+psi)*pb(t)));
+Bcalc..         Benefit =e=  -1*kappa*pbmax+30*sum((t), (data(t,'lambda')*ps(t)-(data(t,'lambda')+psi)*pb(t)));
 balance1(t)..   Pd(t) + Pb(t) + Ppvmax*data(t,'Ppvu') =e= Pch(t) +Ps(t) + Plmax*data(t,'Plu');
 r1(t)..         SOC(t) =e= SOCf$(ord(t)=1) + SOC(t-1)$(ord(t)>1) + Pch(t)*eff_c  - Pd(t)/eff_d;
 r2(t)..  Pch(t)  =l= CR_c*C*w1(t);
 r3(t)..  Pd(t) =l= CR_d*C*(1-w1(t));
 r4(t)..  Pb(t) =l= Pmax*w3(t);
 r5(t)..  Ps(t) =l= Pmax*(1-w3(t));
-
+r6(t)..  Pbmax =g= Pb(t)+Ps(t);
 
 Model modelCe / all /;
-solve modelCe using MINLP maximizing Benefit
+solve modelCe using minlp maximizing Benefit
+
+ 
 
 execute_unload 'C6_E1.gdx';
